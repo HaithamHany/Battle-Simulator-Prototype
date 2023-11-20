@@ -4,13 +4,6 @@ using UnityEngine;
 
 public class MoveState : IUnitStateMachine
 {
-    private Vector3 destination;
-
-    public void SetDestination(Vector3 newDestination)
-    {
-        destination = newDestination;
-    }
-
     public void Enter(Unit unit)
     {
         unit.FindAndSetNewTarget();
@@ -27,16 +20,17 @@ public class MoveState : IUnitStateMachine
         
         if (unit.IsInRange(unit.TargetUnit))
         {
+            unit.AttackState.SetTarget(unit.TargetUnit);
             unit.ChangeState(unit.AttackState);
             return;
         }
         
         // Continue moving towards the destination
-        unit.MoveTowardsDestination(destination);
+        unit.MoveTowardsDestination(unit.TargetUnit.transform);
     }
 
     public void Exit(Unit unit)
     {
-        // Cleanup or reset logic for Move state
+        // Cleanup or reset
     }
 }

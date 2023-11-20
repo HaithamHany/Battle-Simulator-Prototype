@@ -4,14 +4,29 @@ using UnityEngine;
 
 public class AttackState : IUnitStateMachine
 {
+    private Unit target;
+
+    public void SetTarget(Unit newTarget)
+    {
+        target = newTarget;
+    }
     public void Enter(Unit unit)
     {
-        // Initialization for Attack state
+        unit.Attack(target);
     }
 
     public void Execute(Unit unit)
     {
-        // Logic for attacking the target
+        // Check if the target is still alive and in attack range
+        if (target != null && target.IsAlive() && unit.IsInRange(target))
+        {
+            unit.Attack(target); // Continue the attack
+        }
+        else
+        {
+            // Target is dead or out of range, transition to another state (e.g., MoveState)
+            unit.ChangeState(unit.MoveState);
+        }
     }
 
     public void Exit(Unit unit)
