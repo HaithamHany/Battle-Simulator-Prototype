@@ -12,13 +12,13 @@ public class AttackState : IUnitStateMachine
     }
     public void Enter(Unit unit)
     {
-        unit.Attack(target);
+       // unit.Attack(target);
     }
 
     public void Execute(Unit unit)
     {
         // Check if the target is still alive and in attack range
-        if (target != null && target.IsAlive() && unit.IsInRange(target))
+        if (!unit.IsAttacking && target != null && target.IsAlive() && unit.IsInRange(target))
         {
             unit.Attack(target); // Continue the attack
         }

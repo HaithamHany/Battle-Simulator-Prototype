@@ -16,7 +16,8 @@ public class Unit : MonoBehaviour
     [SerializeField] private bool disable;
 
     //TODO: Clean this variable
-    private float jumpForce = 7;
+    private float jumpForce = 12;
+    private float jumpBackForce = 7;
 
     private float lastAttackTime = 0f;
     private MoveState moveState;
@@ -27,10 +28,17 @@ public class Unit : MonoBehaviour
     //TODO: MOVE THIS TO MANAGER
     [SerializeField] private List<Unit> enemyUnits = new List<Unit>();
     [SerializeField] private Unit targetUnit; // remove serialization after testing is done
+    private bool isAttacking = false;
     public Unit TargetUnit => targetUnit;
     public AttackState AttackState => attackState;
     public MoveState MoveState => moveState;
-
+    public bool IsAttacking => isAttacking;
+    
+    //attack test///////////////////////////
+    
+    private bool isCoolingDown = false;
+    private bool isReadyToAttack = false;
+    
     void Start()
     {
         if(disable) return;
@@ -85,63 +93,52 @@ public class Unit : MonoBehaviour
         transform.LookAt(destination);
     }
     
+    
     // Attack the target unit
    public void Attack(Unit target)
    {
-       // Check if the unit can perform an attack based on cooldown and target validity
-       if (Time.time - lastAttackTime <= attackCooldown || target == null || !target.IsAlive() || !IsInRange(target))
-           return;
-
-       // Start the attack coroutine
-       StartCoroutine(AttackCoroutine(target));
-
-       // Update the last attack time for cooldown management
-       lastAttackTime = Time.time;
-   }
-
-   private IEnumerator AttackCoroutine(Unit target)
-   {
-       while (target != null && target.IsAlive() && IsInRange(target))
+       // If the unit is ready to attack and the cooldown has passed, attack the target
+       if (isReadyToAttack && Time.time >= lastAttackTime + attackCooldown && CanAttack(targetUnit))
        {
-           // Jump towards the current target
-           JumpTowardsTarget(target.transform.position);
-
-           // Wait for a moment to simulate the attack duration
-           yield return new WaitForSeconds(0.5f); // Adjust the duration as needed
-
-           // Jump back after a slight delay
-           yield return new WaitForSeconds(0.2f); // Adjust the delay as needed
-           JumpBack();
-        
-           // Optionally, you can wait for a cooldown period using WaitForSeconds
-           yield return new WaitForSeconds(attackCooldown);
+           JumpTowardsTarget(targetUnit.transform.position);
+           lastAttackTime = Time.time;
+           isReadyToAttack = false; // Not ready to attack again until cooldown
        }
+        
+       // If the unit is not ready to attack but the cooldown has passed, it means it's time to jump back
+       if (!isReadyToAttack && Time.time >= lastAttackTime + attackCooldown)
+       {
+           JumpBack();
+           isReadyToAttack = true; // Ready to attack again after jumping back
+           lastAttackTime = Time.time;
+       }
+   }
+   
+   private bool CanAttack(Unit target)
+   {
+       return target != null && target.IsAlive() && IsInRange(target);
    }
 
    private void JumpTowardsTarget(Vector3 targetPosition)
    {
        if (rigidbody != null)
        {
-           // Calculate the direction towards the target
            Vector3 direction = (targetPosition - transform.position).normalized;
-
-           // Apply an explosion force to jump towards the target
            rigidbody.AddForce(direction * jumpForce, ForceMode.Impulse);
        }
    }
 
    private void JumpBack()
    {
-       if (rigidbody != null)
+       if (rigidbody != null && targetUnit != null)
        {
            Vector3 directionBack = (targetUnit.transform.position - transform.position).normalized;
-
-           // Apply an equal and opposite force to jump back
-           rigidbody.AddForce(-directionBack * (jumpForce *2), ForceMode.Impulse);
+           rigidbody.AddForce(-directionBack * jumpBackForce, ForceMode.Impulse);
        }
    }
-
-    
+   
+   
+   
     public void TakeDamage(float damage)
     {
         // Deduct HP based on the incoming damage
@@ -168,6 +165,13 @@ public class Unit : MonoBehaviour
         }
 
         return null; // No valid enemy targets found
+    }
+    
+    private enum UnitAttacState
+    {
+        Idle,
+        Attacking,
+        CoolingDown
     }
     
 }
