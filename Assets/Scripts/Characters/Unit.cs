@@ -1,6 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Unit : MonoBehaviour
 {
@@ -14,6 +17,7 @@ public class Unit : MonoBehaviour
     [SerializeField] private float attackCooldown = 2f;
     [SerializeField] private float hp = 100;
     [SerializeField] private bool disable;
+    [SerializeField] private TextMeshProUGUI hpText;
 
     //TODO: Clean this variable
     private float jumpForce = 12;
@@ -22,6 +26,7 @@ public class Unit : MonoBehaviour
     private float lastAttackTime = 0f;
     private MoveState moveState;
     private AttackState attackState;
+    private DeathState deathState;
     private IUnitStateMachine currentState;
     
     
@@ -33,6 +38,7 @@ public class Unit : MonoBehaviour
     public AttackState AttackState => attackState;
     public MoveState MoveState => moveState;
     public bool IsAttacking => isAttacking;
+    private const float DAMAGE_RANGE = 1f;
     
     //attack test///////////////////////////
     
@@ -44,6 +50,7 @@ public class Unit : MonoBehaviour
         if(disable) return;
         moveState = new MoveState();
         attackState = new AttackState();
+        deathState = new DeathState();
 
         ChangeState(moveState);
     }
@@ -142,15 +149,19 @@ public class Unit : MonoBehaviour
     {
         // Deduct HP based on the incoming damage
         hp -= damage;
-
+        hpText.text = $"{hp}";
         if (!IsAlive())
         {
-            // Transition to DeathState when HP reaches zero
-            Destroy(gameObject);
-           // ChangeState(deathState);
+            ChangeState(deathState);
         }
     }
-    
+
+    public void Die()
+    {
+        rigidbody.AddForce(Vector3.up * 150, ForceMode.Impulse);
+        Destroy(gameObject, 3);
+    }
+
     // Find a random enemy unit (you need to implement this)
     private Unit FindRandomEnemy()
     {
@@ -165,7 +176,16 @@ public class Unit : MonoBehaviour
 
         return null; // No valid enemy targets found
     }
-    
+
+    private void OnCollisionEnter(Collision other)
+    {
+        //TODO: Diffrintiate between attacker and non attacker
+        if (other != null && targetUnit != null && other.gameObject == targetUnit.gameObject)
+        {
+            targetUnit.TakeDamage(attackDamage);
+        }
+    }
+
     private enum UnitAttacState
     {
         Idle,
