@@ -97,6 +97,7 @@ public class Unit : MonoBehaviour
     // Attack the target unit
    public void Attack(Unit target)
    {
+       attackCooldown = Random.Range(0.2f, 2.4f);
        // If the unit is ready to attack and the cooldown has passed, attack the target
        if (isReadyToAttack && Time.time >= lastAttackTime + attackCooldown && CanAttack(targetUnit))
        {
@@ -136,8 +137,6 @@ public class Unit : MonoBehaviour
            rigidbody.AddForce(-directionBack * jumpBackForce, ForceMode.Impulse);
        }
    }
-   
-   
    
     public void TakeDamage(float damage)
     {
