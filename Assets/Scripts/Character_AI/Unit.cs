@@ -169,8 +169,8 @@ public class Unit : MonoBehaviour
 
     public void Die()
     {
-        rigidbody.AddForce(Vector3.up * 150, ForceMode.Impulse);
-        Destroy(gameObject, 3);
+        //TODO: Object Pooling
+        Destroy(gameObject);
     }
 
     // Find a random enemy unit (you need to implement this)
