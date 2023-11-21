@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,9 +24,11 @@ public class GameManager : MonoBehaviour
             instance = this;
             DontDestroyOnLoad(gameObject);
         }
+        
+        StartGameEvent.Instance.AddListener(OnGameStarted);
     }
     
-    void Start()
+    private void OnGameStarted()
     {
         InitializeTeams();
         InitializeEnemyUnits();
@@ -81,6 +84,9 @@ public class GameManager : MonoBehaviour
 
         return newTeamManager;
     }
-    
-    // Additional methods for game-wide functionality
+
+    public void OnDestroy()
+    {
+        StartGameEvent.Instance.RemoveListener(OnGameStarted);
+    }
 }
