@@ -29,11 +29,11 @@ public class UnitData
 
     public float Hp => hp;
 
-    public float Attack => Attack;
+    public float Attack => attack;
 
-    public float AttackSpeed => AttackSpeed;
+    public float AttackSpeed => attackSpeed;
 
-    public float AttackRange => AttackRange;
+    public float AttackRange => attackRange;
 
-    public float MovementSpeed => MovementSpeed;
+    public float MovementSpeed => movementSpeed;
 }
