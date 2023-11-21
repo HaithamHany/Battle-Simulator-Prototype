@@ -28,6 +28,6 @@ public class GameManager : MonoBehaviour
 
         return newTeamManager;
     }
-    s
+    
     // Additional methods for game-wide functionality
 }
