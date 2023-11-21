@@ -28,7 +28,8 @@ public class Unit : MonoBehaviour
     private DeathState deathState;
     private IUnitStateMachine currentState;
     
-    private List<Unit> enemyUnits = new List<Unit>();
+    //remove for testing
+    [SerializeField] private List<Unit> enemyUnits = new List<Unit>();
     
     public Unit TargetUnit => targetUnit;
     public AttackState AttackState => attackState;

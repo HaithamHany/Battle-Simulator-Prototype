@@ -8,6 +8,7 @@ public class TeamManager : MonoBehaviour
     private TeamDataConfig teamData; // Set this via the GameManager or Inspector
     
     public TeamDataConfig TeamData=> teamData;
+    public List<Unit> Units => units;
     
     private const int GRID_SIZE = 3;
     private const int GRID_SPACING = 2;
@@ -48,14 +49,21 @@ public class TeamManager : MonoBehaviour
     private Unit InstantiateUnit(UnitData data, Vector3 spawnPos)
     {
         var unit = Instantiate(teamData.UnitPrefab, spawnPos, Quaternion.identity);
-        
+        unit.name = $"{teamData.TeamName} unit";
         // Initialize the unit with the provided UnitData
         unit.Init(teamData.TeamColor, data);
 
         return unit;
     }
 
-    
+    public void SetEnemyTeam(List<Unit> enemyUnits)
+    {
+        foreach (var unit in units)
+        {
+            unit.SetEnemyTeam(enemyUnits);
+        }
+    }
+
 
     // Implement additional methods as needed for team-specific behavior, such as:
     // - Handling commands from the GameManager

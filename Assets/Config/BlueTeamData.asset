@@ -41,3 +41,4 @@ MonoBehaviour:
   teamColor: {r: 0, g: 0.04648447, b: 1, a: 1}
   unitPrefab: {fileID: 3181846194746963454, guid: 014a85ee0387db5488f59cc3b497d060, type: 3}
   teamName: BlueTeam
+  teamType: 1

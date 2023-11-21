@@ -9,11 +9,13 @@ public class TeamDataConfig : ScriptableObject
     [SerializeField] private Color teamColor;
     [SerializeField] private Unit unitPrefab;
     [SerializeField] private string teamName;
+    [SerializeField] private ETeamType teamType;
 
     public List<UnitData> UnitConfigs => unitConfigs;
     public Color TeamColor => teamColor;
     public Unit UnitPrefab => unitPrefab;
     public string TeamName => teamName;
+    public ETeamType TeamType => teamType;
 }
 
 [System.Serializable]
@@ -36,4 +38,11 @@ public class UnitData
     public float AttackRange => attackRange;
 
     public float MovementSpeed => movementSpeed;
+}
+
+public enum ETeamType
+{
+    None = 0,
+    PlayerTeam = 1,
+    EnemyTeam = 2,
 }

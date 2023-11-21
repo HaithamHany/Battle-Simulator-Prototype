@@ -6,6 +6,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameManagerConfig gameConfig; // List of team configurations
     private List<TeamManager> teamManagers = new List<TeamManager>();
     private static GameManager instance;
+    private List<TeamManager> playerTeams = new List<TeamManager>();
+    private List<TeamManager> enemyTeams = new List<TeamManager>();
 
     public static GameManager Instance => instance;
 
@@ -26,6 +28,23 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         InitializeTeams();
+        InitializeEnemyUnits();
+    }
+    
+    private void InitializeEnemyUnits()
+    {
+        foreach (var playerTeam in playerTeams)
+        {
+            //TODO: REMOVE INDEX WITH TEAM INDEX to CHOOSE FROM
+            // Call InitializeEnemyUnits for each player team to set its enemies
+            playerTeam.SetEnemyTeam(enemyTeams[0].Units);
+        }
+
+        foreach (var enemyTeam in enemyTeams)
+        {
+            // Call InitializeEnemyUnits for each enemy team to set its enemies
+            enemyTeam.SetEnemyTeam(playerTeams[0].Units);
+        }
     }
 
     private void InitializeTeams()
@@ -43,6 +62,15 @@ public class GameManager : MonoBehaviour
             newTeamManager.transform.position = teamPosition;
             
             newTeamManager.Init(teamData);
+            
+            // Categorize teams based on their ETeamType
+            if (teamData.TeamType == ETeamType.PlayerTeam)
+            {
+                playerTeams.Add(newTeamManager);
+                continue;
+            }
+            
+            enemyTeams.Add(newTeamManager);
         }
     }
 
