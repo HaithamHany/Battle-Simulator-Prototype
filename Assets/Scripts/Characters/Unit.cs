@@ -8,46 +8,57 @@ using Random = UnityEngine.Random;
 public class Unit : MonoBehaviour
 {
     [SerializeField] private Rigidbody rigidbody;
-
-    [SerializeField] private bool isAlive;
-    //TODO: MAKE SURE TO USE THE CONFIGURATION FILES AFTER TESTING
-    [SerializeField] private float attackRange = 5f;
-    [SerializeField] private float movementSpeed = 2f;
-    [SerializeField] private float attackDamage = 10f;
-    [SerializeField] private float attackCooldown = 2f;
-    [SerializeField] private float hp = 100;
-    [SerializeField] private bool disable;
     [SerializeField] private TextMeshProUGUI hpText;
-
-    //TODO: Clean this variable
-    private float jumpForce = 12;
-    private float jumpBackForce = 7;
-
+    [SerializeField] private Renderer renderer;
+    
+    private float attackRange;
+    private float movementSpeed;
+    private float attackDamage;
+    private float hp;
+    private float attackSpeed;
+    private float attackCooldown ;
+    private Unit targetUnit;
     private float lastAttackTime = 0f;
+    private bool isAttacking = false;
+    private bool isCoolingDown = false;
+    private bool isReadyToAttack = false;
+    
     private MoveState moveState;
     private AttackState attackState;
     private DeathState deathState;
     private IUnitStateMachine currentState;
     
+    private List<Unit> enemyUnits = new List<Unit>();
     
-    //TODO: MOVE THIS TO MANAGER
-    [SerializeField] private List<Unit> enemyUnits = new List<Unit>();
-    [SerializeField] private Unit targetUnit; // remove serialization after testing is done
-    private bool isAttacking = false;
     public Unit TargetUnit => targetUnit;
     public AttackState AttackState => attackState;
     public MoveState MoveState => moveState;
     public bool IsAttacking => isAttacking;
-    private const float DAMAGE_RANGE = 1f;
     
-    //attack test///////////////////////////
-    
-    private bool isCoolingDown = false;
-    private bool isReadyToAttack = false;
-    
+    private const float JUMP_BACK_FORCE = 7;
+    private const float ATTACK_COOLDOWN_MIN = 0.2f;
+    private const float ATTACK_COOLDOWN_MAX = 2.8f;
+
+
+    public void Init(Color teamColor, UnitData unitConfig)
+    {
+        hp = unitConfig.Hp;
+        attackDamage = unitConfig.Attack;
+        attackSpeed = unitConfig.AttackSpeed;
+        attackRange = unitConfig.AttackRange;
+        movementSpeed = unitConfig.MovementSpeed;
+
+        hpText.text = $"{hp}";
+        renderer.material.color = teamColor;
+    }
+
+    public void SetEnemyTeam(List<Unit> enemyUnits)
+    {
+        this.enemyUnits = enemyUnits;
+    }
+
     void Start()
     {
-        if(disable) return;
         moveState = new MoveState();
         attackState = new AttackState();
         deathState = new DeathState();
@@ -57,7 +68,6 @@ public class Unit : MonoBehaviour
 
     void Update()
     {
-        if(disable) return;
         currentState?.Execute(this);
     }
 
@@ -104,7 +114,7 @@ public class Unit : MonoBehaviour
     // Attack the target unit
    public void Attack(Unit target)
    {
-       attackCooldown = Random.Range(0.2f, 2.4f);
+       attackCooldown = Random.Range(ATTACK_COOLDOWN_MIN, ATTACK_COOLDOWN_MAX);
        // If the unit is ready to attack and the cooldown has passed, attack the target
        if (isReadyToAttack && Time.time >= lastAttackTime + attackCooldown && CanAttack(targetUnit))
        {
@@ -132,7 +142,7 @@ public class Unit : MonoBehaviour
        if (rigidbody != null)
        {
            Vector3 direction = (targetPosition - transform.position).normalized;
-           rigidbody.AddForce(direction * jumpForce, ForceMode.Impulse);
+           rigidbody.AddForce(direction * attackSpeed, ForceMode.Impulse);
        }
    }
 
@@ -141,7 +151,7 @@ public class Unit : MonoBehaviour
        if (rigidbody != null && targetUnit != null)
        {
            Vector3 directionBack = (targetUnit.transform.position - transform.position).normalized;
-           rigidbody.AddForce(-directionBack * jumpBackForce, ForceMode.Impulse);
+           rigidbody.AddForce(-directionBack * JUMP_BACK_FORCE, ForceMode.Impulse);
        }
    }
    

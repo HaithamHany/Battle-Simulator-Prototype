@@ -3,8 +3,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField]
-    private List<TeamData> teamDatas; // List of team configurations
+    [SerializeField] private GameManagerConfig gameConfig; // List of team configurations
     private List<TeamManager> teamManagers = new List<TeamManager>();
 
     void Start()
@@ -14,7 +13,7 @@ public class GameManager : MonoBehaviour
 
     private void InitializeTeams()
     {
-        foreach (var teamData in teamDatas)
+        foreach (var teamData in gameConfig.TeamDataConfigs)
         {
             TeamManager newTeamManager = InstantiateTeamManager(teamData);
             teamManagers.Add(newTeamManager);
@@ -22,16 +21,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private TeamManager InstantiateTeamManager(TeamData data)
+    private TeamManager InstantiateTeamManager(TeamDataConfig data)
     {
-        // Instantiate and return a new TeamManager for the given team data
-        return new TeamManager(); // Placeholder instantiation
-    }
+        GameObject teamManagerObject = new GameObject("TeamManager_" + data.TeamName);
+        TeamManager newTeamManager = teamManagerObject.AddComponent<TeamManager>();
 
-    void Update()
-    {
-        // Handle game-wide updates, check for game end conditions, etc.
+        return newTeamManager;
     }
-
+    s
     // Additional methods for game-wide functionality
 }
