@@ -447,6 +447,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selectionButtonPrefab: {fileID: 1214058717629457734, guid: ecc272975b2fbbe459e401d6e7ffff76, type: 3}
   selectionButtonsParent: {fileID: 1582685482}
+  uiCanvas: {fileID: 616232810}
 --- !u!4 &718446716
 Transform:
   m_ObjectHideFlags: 0

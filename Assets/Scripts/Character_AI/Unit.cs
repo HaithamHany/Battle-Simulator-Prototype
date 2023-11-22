@@ -169,8 +169,7 @@ public class Unit : MonoBehaviour
 
     public void Die()
     {
-        //TODO: Object Pooling
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 
     // Find a random enemy unit (you need to implement this)

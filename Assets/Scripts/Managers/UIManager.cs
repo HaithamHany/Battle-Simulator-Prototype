@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour
 {
    [SerializeField] private TeamSelectionButton selectionButtonPrefab;
    [SerializeField] private Transform selectionButtonsParent;
+   [SerializeField] private GameObject uiCanvas;
    
    private void Awake()
    {
@@ -33,6 +34,7 @@ public class UIManager : MonoBehaviour
    public void StartGame()
    {
       StartGameEvent.Instance.Invoke();
+      uiCanvas.SetActive(false);
    }
 
    private void OnDestroy()
