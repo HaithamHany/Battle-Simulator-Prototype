@@ -1,11 +1,14 @@
+using System;
 using System.Collections.Generic;
+using Events;
 using UnityEngine;
 
 public class TeamManager : MonoBehaviour
 {
     
     private List<Unit> units = new List<Unit>();
-    private TeamDataConfig teamData; // Set this via the GameManager or Inspector
+    private TeamDataConfig teamData;
+    private int deadMembers;
     
     public TeamDataConfig TeamData=> teamData;
     public List<Unit> Units => units;
@@ -13,7 +16,26 @@ public class TeamManager : MonoBehaviour
     private const int GRID_SIZE = 3;
     private const int GRID_SPACING = 2;
 
-    // Call this method from the GameManager to initialize each team
+
+    private void Awake()
+    {
+        UnitDiedEvent.Instance.AddListener(OnUnitDied);
+    }
+
+    private void OnUnitDied(Unit deadUnit)
+    {
+        if (deadUnit.UnitManager == this)
+        {
+            deadMembers++;
+        }
+
+        if (deadMembers >= teamData.UnitConfigs.Count)
+        {
+            TeamLostEvent.Instance.Invoke(this);
+        }
+    }
+
+    // initialize each team
     public void Init(TeamDataConfig teamData)
     {
         this.teamData = teamData;
@@ -62,7 +84,7 @@ public class TeamManager : MonoBehaviour
         var unit = Instantiate(teamData.UnitPrefab, spawnPos, Quaternion.identity);
         unit.name = $"{teamData.TeamName} unit";
         // Initialize the unit with the provided UnitData
-        unit.Init(teamData.TeamColor, data);
+        unit.Init(teamData.TeamColor, data, this);
 
         return unit;
     }
@@ -94,17 +116,22 @@ public class TeamManager : MonoBehaviour
             //Recycle the same object before deciding to instantiate a new one
             if (i < Units.Count && Units[i] != null)
             {
-                Units[i].Init(teamData.TeamColor, unitData);
+                Units[i].Init(teamData.TeamColor, unitData, this);
                 Units[i].gameObject.SetActive(true);
                 continue;
             }
             
             //Otherwise instantiate a new one in case team members size is bigger than the initial pool of objects
             var newUnit = InstantiateUnit(unitData, Vector3.zero);
-            newUnit.Init(teamData.TeamColor, unitData);
+            newUnit.Init(teamData.TeamColor, unitData, this);
             units.Add(newUnit);
         }
         
         OrganizeTeam(teamData);
+    }
+
+    private void OnDestroy()
+    {
+        UnitDiedEvent.Instance.RemoveListener(OnUnitDied);
     }
 }

@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
     private List<TeamManager> playerTeams = new List<TeamManager>();
     private List<TeamManager> enemyTeams = new List<TeamManager>();
     private static GameManager instance;
+    private TeamManager currentPlayerTeam;
+    private TeamManager currentEnemyTeam;
     public static GameManager Instance => instance;
 
     private const int TEAM_SPACING = 30;
@@ -28,6 +30,7 @@ public class GameManager : MonoBehaviour
         
         StartGameEvent.Instance.AddListener(OnGameStarted);
         SelectEnemyTeamEvent.Instance.AddListener(OnTeamSelected);
+        TeamLostEvent.Instance.AddListener(OnTeamLost);
     }
     
     private void Start()
@@ -36,8 +39,16 @@ public class GameManager : MonoBehaviour
         InitializeTeams();
     }
     
+    private void OnTeamLost(TeamManager losingTeam)
+    {
+        //TODO: END GAME and detrime which team won
+        var winner = losingTeam == currentEnemyTeam ? currentPlayerTeam : currentEnemyTeam;
+        GameOverEvent.Instance.Invoke(winner);
+    }
+    
     private void OnTeamSelected(int teamIndex)
     {
+        currentEnemyTeam = enemyTeams[teamIndex];
         var newTeamData = enemyTeams[teamIndex].TeamData;
         enemyTeams.FirstOrDefault()?.UpdateTeam(newTeamData);
     }
@@ -67,17 +78,17 @@ public class GameManager : MonoBehaviour
 
     private void InitializeTeams()
     {
-        var defaultPlayerTeam = playerTeams.FirstOrDefault();
-        var defaultEnemyTeam = enemyTeams.FirstOrDefault();
+         currentPlayerTeam = playerTeams.FirstOrDefault();
+         currentEnemyTeam = enemyTeams.FirstOrDefault();
         
-        if (defaultPlayerTeam != null)
+        if (currentPlayerTeam != null)
         {
-            defaultPlayerTeam.SpawnUnits();
+            currentPlayerTeam.SpawnUnits();
         }
 
-        if (defaultEnemyTeam != null)
+        if (currentEnemyTeam != null)
         {
-            defaultEnemyTeam.SpawnUnits();
+            currentEnemyTeam.SpawnUnits();
         }
     }
 
@@ -122,5 +133,6 @@ public class GameManager : MonoBehaviour
     {
         StartGameEvent.Instance.RemoveListener(OnGameStarted);
         SelectEnemyTeamEvent.Instance.RemoveListener(OnTeamSelected);
+        TeamLostEvent.Instance.RemoveListener(OnTeamLost);
     }
 }

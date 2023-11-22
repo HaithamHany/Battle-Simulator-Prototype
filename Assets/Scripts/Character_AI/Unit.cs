@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Events;
 using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -28,26 +29,28 @@ public class Unit : MonoBehaviour
     private DeathState deathState;
     private IUnitStateMachine currentState;
     
-    //remove for testing
-    [SerializeField] private List<Unit> enemyUnits = new List<Unit>();
+    private List<Unit> enemyUnits = new List<Unit>();
+    private TeamManager unitManager;
     
     public Unit TargetUnit => targetUnit;
     public AttackState AttackState => attackState;
     public MoveState MoveState => moveState;
     public bool IsAttacking => isAttacking;
+    public TeamManager UnitManager => unitManager;
     
     private const float JUMP_BACK_FORCE = 7;
     private const float ATTACK_COOLDOWN_MIN = 0.2f;
     private const float ATTACK_COOLDOWN_MAX = 2.8f;
 
 
-    public void Init(Color teamColor, UnitData unitConfig)
+    public void Init(Color teamColor, UnitData unitConfig, TeamManager unitManager)
     {
         hp = unitConfig.Hp;
         attackDamage = unitConfig.Attack;
         attackSpeed = unitConfig.AttackSpeed;
         attackRange = unitConfig.AttackRange;
         movementSpeed = unitConfig.MovementSpeed;
+        this.unitManager = unitManager;
 
         hpText.text = $"{hp}";
         renderer.material.color = teamColor;
@@ -94,6 +97,11 @@ public class Unit : MonoBehaviour
     public void FindAndSetNewTarget()
     {
         targetUnit = FindRandomEnemy();
+
+        if (targetUnit == null)
+        {
+            
+        }
     }
     
     // Move towards a specified destination
@@ -169,6 +177,7 @@ public class Unit : MonoBehaviour
 
     public void Die()
     {
+        UnitDiedEvent.Instance.Invoke(this);
         gameObject.SetActive(false);
     }
 
@@ -184,6 +193,7 @@ public class Unit : MonoBehaviour
             return enemyUnits[randomIndex];
         }
 
+        
         return null; // No valid enemy targets found
     }
 
