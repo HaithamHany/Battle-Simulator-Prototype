@@ -150,7 +150,7 @@ GameObject:
   - component: {fileID: 3181846194746963451}
   - component: {fileID: 3181846194746963454}
   m_Layer: 0
-  m_Name: UnitCapsule
+  m_Name: Unit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

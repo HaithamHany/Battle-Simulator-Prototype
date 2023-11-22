@@ -10,35 +10,55 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ac0b95d8a40e8e745a382abb73b5337f, type: 3}
-  m_Name: RedTeamData
+  m_Name: GreenTeamData
   m_EditorClassIdentifier: 
   unitConfigs:
-  - hp: 100
+  - hp: 75
     attack: 10
     attackSpeed: 10
     attackRange: 5
     movementSpeed: 2
-  - hp: 100
+  - hp: 75
     attack: 10
     attackSpeed: 10
     attackRange: 5
     movementSpeed: 2
-  - hp: 100
+  - hp: 75
     attack: 10
     attackSpeed: 10
     attackRange: 5
     movementSpeed: 2
-  - hp: 100
+  - hp: 75
     attack: 10
     attackSpeed: 10
     attackRange: 5
     movementSpeed: 2
-  - hp: 100
+  - hp: 75
     attack: 10
     attackSpeed: 10
     attackRange: 5
     movementSpeed: 2
-  teamColor: {r: 1, g: 0.10717305, b: 0, a: 1}
+  - hp: 75
+    attack: 10
+    attackSpeed: 10
+    attackRange: 5
+    movementSpeed: 2
+  - hp: 75
+    attack: 10
+    attackSpeed: 10
+    attackRange: 5
+    movementSpeed: 2
+  - hp: 75
+    attack: 10
+    attackSpeed: 10
+    attackRange: 5
+    movementSpeed: 2
+  - hp: 75
+    attack: 10
+    attackSpeed: 10
+    attackRange: 5
+    movementSpeed: 2
+  teamColor: {r: 0, g: 1, b: 0.03467822, a: 1}
   unitPrefab: {fileID: 3181846194746963454, guid: 014a85ee0387db5488f59cc3b497d060, type: 3}
-  teamName: RedTeam
+  teamName: Green Team
   teamType: 2

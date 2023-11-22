@@ -17,11 +17,10 @@ public class TeamManager : MonoBehaviour
     public void Init(TeamDataConfig teamData)
     {
         this.teamData = teamData;
-        SpawnUnits();
     }
     
     // Spawn units based on the provided TeamData
-    private void SpawnUnits()
+    public void SpawnUnits()
     {
         int unitCount = Mathf.Min(GRID_SIZE * GRID_SIZE, teamData.UnitConfigs.Count);
 
@@ -36,7 +35,19 @@ public class TeamManager : MonoBehaviour
             units.Add(newUnit);
         }
     }
-    
+
+    private void OrganizeTeam(TeamDataConfig newTeamData)
+    {
+        int unitCount = newTeamData.UnitConfigs.Count;
+        for (int i = 0; i < unitCount; i++)
+        {
+            int row = i / GRID_SIZE;
+            int col = i % GRID_SIZE;
+            Vector3 spawnPosition = CalculateSpawnPosition(row, col);
+            units[i].transform.position = spawnPosition;
+        }
+    }
+
     private Vector3 CalculateSpawnPosition(int row, int col)
     {
         // Calculate the spawn position based on the row and column
@@ -64,10 +75,36 @@ public class TeamManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Updating team and utilizing object pooling
+    /// </summary>
+    /// <param name="teamData"></param>
+    public void UpdateTeam(TeamDataConfig teamData)
+    {
+        //Disable all
+        foreach (var unit in Units)
+        {
+            unit.gameObject.SetActive(false);
+        }
 
-    // Implement additional methods as needed for team-specific behavior, such as:
-    // - Handling commands from the GameManager
-    // - Coordinating unit movements and actions
-    // - Responding to changes in game state
-    // - Managing resources or special abilities unique to the team
+        for (int i = 0; i < teamData.UnitConfigs.Count; i++)
+        {
+            var unitData = teamData.UnitConfigs[i];
+
+            //Recycle the same object before deciding to instantiate a new one
+            if (i < Units.Count && Units[i] != null)
+            {
+                Units[i].Init(teamData.TeamColor, unitData);
+                Units[i].gameObject.SetActive(true);
+                continue;
+            }
+            
+            //Otherwise instantiate a new one in case team members size is bigger than the initial pool of objects
+            var newUnit = InstantiateUnit(unitData, Vector3.zero);
+            newUnit.Init(teamData.TeamColor, unitData);
+            units.Add(newUnit);
+        }
+        
+        OrganizeTeam(teamData);
+    }
 }

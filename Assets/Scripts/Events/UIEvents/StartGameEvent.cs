@@ -1,11 +1,14 @@
 
 using UnityEngine.Events;
 
-/// <summary>
-/// Invoked when a user Starts a game
-/// </summary>
-public class StartGameEvent : UnityEvent
+namespace Events
 {
-    public static StartGameEvent Instance = new StartGameEvent();
+    /// <summary>
+    /// Invoked when a user Starts a game
+    /// </summary>
+    public class StartGameEvent : UnityEvent
+    {
+        public static StartGameEvent Instance = new StartGameEvent();
+    }
 }
 

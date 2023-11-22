@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac0b95d8a40e8e745a382abb73b5337f, type: 3}
+  m_Name: YellowTeamData
+  m_EditorClassIdentifier: 
+  unitConfigs:
+  - hp: 100
+    attack: 10
+    attackSpeed: 10
+    attackRange: 5
+    movementSpeed: 2
+  - hp: 100
+    attack: 10
+    attackSpeed: 10
+    attackRange: 5
+    movementSpeed: 2
+  - hp: 100
+    attack: 10
+    attackSpeed: 10
+    attackRange: 5
+    movementSpeed: 2
+  - hp: 100
+    attack: 10
+    attackSpeed: 10
+    attackRange: 5
+    movementSpeed: 2
+  - hp: 100
+    attack: 10
+    attackSpeed: 10
+    attackRange: 5
+    movementSpeed: 2
+  - hp: 100
+    attack: 10
+    attackSpeed: 10
+    attackRange: 5
+    movementSpeed: 2
+  - hp: 100
+    attack: 10
+    attackSpeed: 10
+    attackRange: 5
+    movementSpeed: 2
+  - hp: 100
+    attack: 10
+    attackSpeed: 10
+    attackRange: 5
+    movementSpeed: 2
+  - hp: 100
+    attack: 10
+    attackSpeed: 10
+    attackRange: 5
+    movementSpeed: 2
+  teamColor: {r: 1, g: 0.98706424, b: 0, a: 1}
+  unitPrefab: {fileID: 3181846194746963454, guid: 014a85ee0387db5488f59cc3b497d060, type: 3}
+  teamName: Yello Team
+  teamType: 2
