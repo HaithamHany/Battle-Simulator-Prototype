@@ -12,7 +12,6 @@ public class AttackState : IUnitStateMachine
     }
     public void Enter(Unit unit)
     {
-       // unit.Attack(target);
     }
 
     public void Execute(Unit unit)
@@ -31,6 +30,6 @@ public class AttackState : IUnitStateMachine
 
     public void Exit(Unit unit)
     {
-        // Cleanup or reset logic for Attack state
+        
     }
 }

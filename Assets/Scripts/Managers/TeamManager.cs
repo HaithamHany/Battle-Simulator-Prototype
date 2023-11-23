@@ -7,7 +7,8 @@ public class TeamManager : MonoBehaviour
 {
     
     private List<Unit> units = new List<Unit>();
-    private TeamDataConfig teamData; //For selection
+    //For selection only
+    private TeamDataConfig teamData; 
     //After spawning different team
     private TeamDataConfig updatedData; 
     private int deadMembers;
@@ -25,6 +26,7 @@ public class TeamManager : MonoBehaviour
         UnitDiedEvent.Instance.AddListener(OnUnitDied);
     }
 
+    
     private void OnUnitDied(Unit deadUnit)
     {
         if (deadUnit.UnitManager != this) return;
@@ -41,8 +43,7 @@ public class TeamManager : MonoBehaviour
     {
         return deadMembers >= units.Count;
     }
-
-    // initialize each team
+    
     public void Init(TeamDataConfig teamData)
     {
         this.teamData = teamData;
@@ -51,7 +52,9 @@ public class TeamManager : MonoBehaviour
         updatedData = teamData;
     }
     
-    // Spawn units based on the provided TeamData
+    /// <summary>
+    /// // Spawn units based on the provided TeamData
+    /// </summary>
     public void SpawnUnits()
     {
         int unitCount = teamData.UnitConfigs.Count;
@@ -63,11 +66,15 @@ public class TeamManager : MonoBehaviour
             int col = i % GRID_SIZE;
             Vector3 spawnPosition = CalculateSpawnPosition(row, col); // Calculate the spawn position
 
-            var newUnit = InstantiateUnit(unitData, spawnPosition);
+            var newUnit = InstantiateUnit(teamData, unitData, spawnPosition);
             units.Add(newUnit);
         }
     }
 
+    /// <summary>
+    /// Rearranging formation
+    /// </summary>
+    /// <param name="newTeamData">The desired team data</param>
     private void OrganizeTeam(TeamDataConfig newTeamData)
     {
         int unitCount = newTeamData.UnitConfigs.Count;
@@ -80,17 +87,22 @@ public class TeamManager : MonoBehaviour
         }
     }
 
+    
+    /// <summary>
+    /// Calculate the spawn position based on the row and column
+    /// </summary>
+    /// <param name="row">Row</param>
+    /// <param name="col">Column</param>
+    /// <returns>Position</returns>
     private Vector3 CalculateSpawnPosition(int row, int col)
     {
-        // Calculate the spawn position based on the row and column
-        
         //Values below based on  grid spacing
         float xOffset = col * GRID_SPACING;
         float zOffset = row * GRID_SPACING; 
         return transform.position + new Vector3(xOffset, 0f, zOffset);
     }
 
-    private Unit InstantiateUnit(UnitData data, Vector3 spawnPos)
+    private Unit InstantiateUnit(TeamDataConfig teamData, UnitData data, Vector3 spawnPos)
     {
         var unit = Instantiate(teamData.UnitPrefab, spawnPos, Quaternion.identity);
         unit.name = $"{teamData.TeamName} unit";
@@ -139,7 +151,7 @@ public class TeamManager : MonoBehaviour
             }
             
             //Otherwise instantiate a new one in case team members size is bigger than the initial pool of objects
-            var newUnit = InstantiateUnit(unitData, Vector3.zero);
+            var newUnit = InstantiateUnit(updatedData, unitData, Vector3.zero);
             newUnit.Init(teamData.TeamColor, unitData, this);
             units.Add(newUnit);
         }

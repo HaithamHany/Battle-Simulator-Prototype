@@ -1,0 +1,39 @@
+apply plugin: 'com.android.library'
+// Apply any additional plugins you might require
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    // Add your project dependencies here
+}
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion '29.0.2'
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        minSdkVersion 21 // Set minimum SDK version based on your needs
+        targetSdkVersion 28 // Set target SDK version to the same as compileSdkVersion
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64' // Set ABI filters if you use NDK
+        }
+        versionCode 1 // Increment with each release
+        versionName '1.0' // Set your version name
+        consumerProguardFiles 'proguard-unity.txt' // Add any ProGuard configuration files
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+  aaptOptions {
+    // Ensure that the unityStreamingAssets variable is correctly tokenized to include the list of file extensions.
+    noCompress = unityStreamingAssets.tokenize(', ') + ['your_extension_here', 'another_extension']
+    // The 'your_extension_here' should be replaced with actual file extensions you use in your StreamingAssets.
+	}
+    // Add any packaging options here
+}

@@ -6,7 +6,9 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private GameManagerConfig gameConfig; // List of team configurations
+    // List of team configurations
+    [SerializeField] private GameManagerConfig gameConfig; 
+    //Keeps tracking of different team managers
     private List<TeamManager> teamManagers = new List<TeamManager>();
     private List<TeamManager> playerTeams = new List<TeamManager>();
     private List<TeamManager> enemyTeams = new List<TeamManager>();
@@ -41,6 +43,9 @@ public class GameManager : MonoBehaviour
         InitializeTeams();
     }
     
+    /// <summary>
+    /// Resets teams to the original starting state
+    /// </summary>
     private void OnResetGame()
     {
         var defaultEnemyTeamManager = enemyTeams.FirstOrDefault();
@@ -77,7 +82,6 @@ public class GameManager : MonoBehaviour
     {
         foreach (var playerTeam in playerTeams)
         {
-            //TODO: REMOVE INDEX WITH TEAM INDEX to CHOOSE FROM
             // Call InitializeEnemyUnits for each player team to set its enemies
             playerTeam.StartGame(currentSelectedEnemyUnits);
         }
@@ -90,6 +94,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Initializes starting teams and asks the team manager to spawn units to prepare for starting the game.
+    /// </summary>
     private void InitializeTeams()
     {
          currentPlayerTeam = playerTeams.FirstOrDefault();
@@ -106,6 +113,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Pre-setup to be able to create team managers and its units and categories enemies and players.
+    /// </summary>
     private void Setup()
     {
         float middleX = TEAM_SPACING / 2f;

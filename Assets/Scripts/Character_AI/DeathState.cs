@@ -6,7 +6,7 @@ public class DeathState : IUnitStateMachine
 {
     public void Enter(Unit unit)
     {
-        unit.Die(); // Continue the attack
+        unit.Die(); 
     }
 
     public void Execute(Unit unit)
@@ -16,6 +16,6 @@ public class DeathState : IUnitStateMachine
 
     public void Exit(Unit unit)
     {
-        // Cleanup or reset logic for Attack state
+     
     }
 }

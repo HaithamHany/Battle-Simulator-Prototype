@@ -30,7 +30,7 @@ public class Unit : MonoBehaviour
     private IdleState IdleState;
     private IUnitStateMachine currentState;
     
-    private List<Unit> enemyUnits = new List<Unit>();
+    [SerializeField]private List<Unit> enemyUnits = new List<Unit>();
     private TeamManager unitManager;
     
     public Unit TargetUnit => targetUnit;
@@ -44,6 +44,12 @@ public class Unit : MonoBehaviour
     private const float ATTACK_COOLDOWN_MAX = 2.8f;
 
 
+    /// <summary>
+    /// Initializes team unit
+    /// </summary>
+    /// <param name="teamColor">Member color of the team</param>
+    /// <param name="unitConfig">Unit config data</param>
+    /// <param name="unitManager">The unit's manager</param>
     public void Init(Color teamColor, UnitData unitConfig, TeamManager unitManager)
     {
         hp = unitConfig.Hp;
@@ -80,6 +86,10 @@ public class Unit : MonoBehaviour
         currentState?.Execute(this);
     }
 
+    /// <summary>
+    /// Changes unit's current state
+    /// </summary>
+    /// <param name="newState"></param>
     public void ChangeState(IUnitStateMachine newState)
     {
         currentState?.Exit(this);
@@ -89,10 +99,10 @@ public class Unit : MonoBehaviour
     
     public bool IsAlive()
     {
-        return hp > 0; 
+        return hp > 0;
     }
-
-    // Check if the target unit is within attack range
+    
+    
     public bool IsInRange(Unit target)
     {
         float distance = Vector3.Distance(transform.position, target.transform.position);
@@ -102,11 +112,7 @@ public class Unit : MonoBehaviour
     public void FindAndSetNewTarget()
     {
         targetUnit = FindRandomEnemy();
-
-        if (targetUnit == null)
-        {
-            
-        }
+        
     }
     
     // Move towards a specified destination
@@ -117,10 +123,7 @@ public class Unit : MonoBehaviour
 
         // Calculate the velocity based on movementSpeed
         Vector3 velocity = direction * movementSpeed;
-
-        // Apply the velocity as a force to the Rigidbody
         rigidbody.velocity = velocity;
-        
         transform.LookAt(destination);
     }
     
@@ -183,19 +186,22 @@ public class Unit : MonoBehaviour
     public void Die()
     {
         UnitDiedEvent.Instance.Invoke(this);
+        
+        //Deactivates it for recycling
         gameObject.SetActive(false);
     }
 
-    // Find a random enemy unit (you need to implement this)
+    
+    /// <summary>
+    /// Find a random enemy unit 
+    /// </summary>
+    /// <returns>Found Unit</returns>
     private Unit FindRandomEnemy()
     {
-        // Implement logic to find a random enemy unit
-        // For example, you can use a list of all units and select a random enemy unit from it
-
         if (enemyUnits.Count > 0)
         {
             int randomIndex = Random.Range(0, enemyUnits.Count);
-            return enemyUnits[randomIndex];
+            return (IsAlive())?enemyUnits[randomIndex] : null;
         }
 
         
@@ -211,19 +217,17 @@ public class Unit : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+        hp = 0;
+    }
+
+
     public void Reset()
     {
         ChangeState(IdleState);
         rigidbody.isKinematic = true;
         transform.rotation = Quaternion.identity;
     }
-
-    private enum UnitAttacState
-    {
-        Idle,
-        Attacking,
-        CoolingDown
-    }
-    
 }
 
