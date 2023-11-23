@@ -60,5 +60,5 @@ MonoBehaviour:
     movementSpeed: 2
   teamColor: {r: 1, g: 0.98706424, b: 0, a: 1}
   unitPrefab: {fileID: 3181846194746963454, guid: 014a85ee0387db5488f59cc3b497d060, type: 3}
-  teamName: Yello Team
+  teamName: Yellow Team
   teamType: 2

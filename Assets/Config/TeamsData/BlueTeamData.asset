@@ -58,7 +58,7 @@ MonoBehaviour:
     attackSpeed: 10
     attackRange: 5
     movementSpeed: 2
-  teamColor: {r: 0, g: 0.04648447, b: 1, a: 1}
+  teamColor: {r: 0, g: 0, b: 1, a: 0}
   unitPrefab: {fileID: 3181846194746963454, guid: 014a85ee0387db5488f59cc3b497d060, type: 3}
   teamName: Blue Team
   teamType: 1

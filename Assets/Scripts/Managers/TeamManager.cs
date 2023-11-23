@@ -54,7 +54,7 @@ public class TeamManager : MonoBehaviour
     // Spawn units based on the provided TeamData
     public void SpawnUnits()
     {
-        int unitCount = Mathf.Min(GRID_SIZE * GRID_SIZE, teamData.UnitConfigs.Count);
+        int unitCount = teamData.UnitConfigs.Count;
 
         for (int i = 0; i < unitCount; i++)
         {
@@ -83,9 +83,10 @@ public class TeamManager : MonoBehaviour
     private Vector3 CalculateSpawnPosition(int row, int col)
     {
         // Calculate the spawn position based on the row and column
-        // Adjust the position as needed to fit your game's grid layout
-        float xOffset = col * GRID_SPACING; //  this value based on  grid spacing
-        float zOffset = row * GRID_SPACING; //  this value based on  grid spacing
+        
+        //Values below based on  grid spacing
+        float xOffset = col * GRID_SPACING;
+        float zOffset = row * GRID_SPACING; 
         return transform.position + new Vector3(xOffset, 0f, zOffset);
     }
 

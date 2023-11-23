@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: GameManagerConfig
   m_EditorClassIdentifier: 
   teamConfigs:
-  - {fileID: 11400000, guid: f43819618481bf54e914afb3ab0904f3, type: 2}
   - {fileID: 11400000, guid: 3b168f35773d04440b94a752f9d0287e, type: 2}
+  - {fileID: 11400000, guid: f43819618481bf54e914afb3ab0904f3, type: 2}
   - {fileID: 11400000, guid: a134a6f55042f4246b5eaeebde588c30, type: 2}
   - {fileID: 11400000, guid: e15eb6bbde69dc84bb3976f149e16739, type: 2}
   - {fileID: 11400000, guid: 9842b54b8e9382441be8dd8cf48bd40e, type: 2}
