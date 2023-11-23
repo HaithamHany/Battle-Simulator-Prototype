@@ -27,6 +27,7 @@ public class Unit : MonoBehaviour
     private MoveState moveState;
     private AttackState attackState;
     private DeathState deathState;
+    private IdleState IdleState;
     private IUnitStateMachine currentState;
     
     private List<Unit> enemyUnits = new List<Unit>();
@@ -54,11 +55,14 @@ public class Unit : MonoBehaviour
 
         hpText.text = $"{hp}";
         renderer.material.color = teamColor;
+        transform.rotation = Quaternion.identity;
     }
 
-    public void SetEnemyTeam(List<Unit> enemyUnits)
+    public void Fight(List<Unit> enemyUnits)
     {
         this.enemyUnits = enemyUnits;
+        ChangeState(MoveState);
+        rigidbody.isKinematic = false;
     }
 
     void Start()
@@ -66,6 +70,7 @@ public class Unit : MonoBehaviour
         moveState = new MoveState();
         attackState = new AttackState();
         deathState = new DeathState();
+        IdleState = new IdleState();
 
         ChangeState(moveState);
     }
@@ -204,6 +209,13 @@ public class Unit : MonoBehaviour
         {
             targetUnit.TakeDamage(attackDamage);
         }
+    }
+
+    public void Reset()
+    {
+        ChangeState(IdleState);
+        rigidbody.isKinematic = true;
+        transform.rotation = Quaternion.identity;
     }
 
     private enum UnitAttacState

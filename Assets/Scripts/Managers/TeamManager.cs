@@ -7,10 +7,13 @@ public class TeamManager : MonoBehaviour
 {
     
     private List<Unit> units = new List<Unit>();
-    private TeamDataConfig teamData;
+    private TeamDataConfig teamData; //For selection
+    //After spawning different team
+    private TeamDataConfig updatedData; 
     private int deadMembers;
     
     public TeamDataConfig TeamData=> teamData;
+    public TeamDataConfig UpdatedData=> updatedData;
     public List<Unit> Units => units;
     
     private const int GRID_SIZE = 3;
@@ -24,21 +27,28 @@ public class TeamManager : MonoBehaviour
 
     private void OnUnitDied(Unit deadUnit)
     {
-        if (deadUnit.UnitManager == this)
-        {
-            deadMembers++;
-        }
+        if (deadUnit.UnitManager != this) return;
+        
+        deadMembers++;
 
-        if (deadMembers >= teamData.UnitConfigs.Count)
+        if (AllMembersDead())
         {
             TeamLostEvent.Instance.Invoke(this);
         }
+    }
+
+    public bool AllMembersDead()
+    {
+        return deadMembers >= units.Count;
     }
 
     // initialize each team
     public void Init(TeamDataConfig teamData)
     {
         this.teamData = teamData;
+        
+        //Initially same as original team data
+        updatedData = teamData;
     }
     
     // Spawn units based on the provided TeamData
@@ -89,11 +99,11 @@ public class TeamManager : MonoBehaviour
         return unit;
     }
 
-    public void SetEnemyTeam(List<Unit> enemyUnits)
+    public void StartGame(List<Unit> enemyUnits)
     {
         foreach (var unit in units)
         {
-            unit.SetEnemyTeam(enemyUnits);
+            unit.Fight(enemyUnits);
         }
     }
 
@@ -101,11 +111,15 @@ public class TeamManager : MonoBehaviour
     /// Updating team and utilizing object pooling
     /// </summary>
     /// <param name="teamData"></param>
-    public void UpdateTeam(TeamDataConfig teamData)
+    public void ResetTeam(TeamDataConfig teamData)
     {
+        //Updating  the data
+        updatedData = teamData;
+        deadMembers = 0;
         //Disable all
         foreach (var unit in Units)
         {
+            unit.Reset();
             unit.gameObject.SetActive(false);
         }
 
@@ -116,8 +130,10 @@ public class TeamManager : MonoBehaviour
             //Recycle the same object before deciding to instantiate a new one
             if (i < Units.Count && Units[i] != null)
             {
-                Units[i].Init(teamData.TeamColor, unitData, this);
-                Units[i].gameObject.SetActive(true);
+                var unit = Units[i];
+                unit.Init(teamData.TeamColor, unitData, this);
+                unit.gameObject.SetActive(true);
+                unit.name = $"{teamData.TeamName} unit";
                 continue;
             }
             
@@ -129,6 +145,7 @@ public class TeamManager : MonoBehaviour
         
         OrganizeTeam(teamData);
     }
+    
 
     private void OnDestroy()
     {

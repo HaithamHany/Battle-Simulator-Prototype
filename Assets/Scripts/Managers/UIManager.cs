@@ -18,9 +18,9 @@ public class UIManager : MonoBehaviour
       GameOverEvent.Instance.AddListener(OnGameEnded);
    }
 
-   private void OnGameEnded(TeamManager winnerTeam)
+   private void OnGameEnded(TeamDataConfig winnerTeamData)
    {
-      resultScreen.Init(winnerTeam.TeamData);
+      resultScreen.Init(winnerTeamData);
       uiCanvas.gameObject.SetActive(true);
       resultScreen.gameObject.SetActive(true);
       mainMenuScreen.SetActive(false);
@@ -56,6 +56,6 @@ public class UIManager : MonoBehaviour
    {
       resultScreen.gameObject.SetActive(false);
       mainMenuScreen.gameObject.SetActive(true);
-      //TODO: Restart game
+      ResetGameEvent.Instance.Invoke();
    }
 }

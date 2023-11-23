@@ -31,26 +31,40 @@ public class GameManager : MonoBehaviour
         StartGameEvent.Instance.AddListener(OnGameStarted);
         SelectEnemyTeamEvent.Instance.AddListener(OnTeamSelected);
         TeamLostEvent.Instance.AddListener(OnTeamLost);
+        ResetGameEvent.Instance.AddListener(OnResetGame);
     }
-    
+
+   
     private void Start()
     {
         Setup();
         InitializeTeams();
     }
     
+    private void OnResetGame()
+    {
+        var defaultEnemyTeamManager = enemyTeams.FirstOrDefault();
+        var defaultPlayerTeamManager = playerTeams.FirstOrDefault();
+        
+        if (defaultEnemyTeamManager != null) 
+            defaultEnemyTeamManager.ResetTeam(defaultEnemyTeamManager.TeamData);
+        
+        if (defaultPlayerTeamManager != null)
+            defaultPlayerTeamManager.ResetTeam(defaultPlayerTeamManager.TeamData);
+    }
+
+    
     private void OnTeamLost(TeamManager losingTeam)
     {
-        //TODO: END GAME and detrime which team won
-        var winner = losingTeam == currentEnemyTeam ? currentPlayerTeam : currentEnemyTeam;
-        GameOverEvent.Instance.Invoke(winner);
+        var winner = losingTeam.UpdatedData == currentEnemyTeam.TeamData ? currentPlayerTeam : currentEnemyTeam;
+        GameOverEvent.Instance.Invoke(winner.UpdatedData);
     }
     
     private void OnTeamSelected(int teamIndex)
     {
         currentEnemyTeam = enemyTeams[teamIndex];
         var newTeamData = enemyTeams[teamIndex].TeamData;
-        enemyTeams.FirstOrDefault()?.UpdateTeam(newTeamData);
+        enemyTeams.FirstOrDefault()?.ResetTeam(newTeamData);
     }
 
     private void OnGameStarted()
@@ -65,14 +79,14 @@ public class GameManager : MonoBehaviour
         {
             //TODO: REMOVE INDEX WITH TEAM INDEX to CHOOSE FROM
             // Call InitializeEnemyUnits for each player team to set its enemies
-            playerTeam.SetEnemyTeam(currentSelectedEnemyUnits);
+            playerTeam.StartGame(currentSelectedEnemyUnits);
         }
 
         foreach (var enemyTeam in enemyTeams)
         {
             // Call InitializeEnemyUnits for each enemy team to set its enemies
             //The player will always be the first or default
-            enemyTeam.SetEnemyTeam(playerTeams.FirstOrDefault()?.Units);
+            enemyTeam.StartGame(playerTeams.FirstOrDefault()?.Units);
         }
     }
 
@@ -134,5 +148,6 @@ public class GameManager : MonoBehaviour
         StartGameEvent.Instance.RemoveListener(OnGameStarted);
         SelectEnemyTeamEvent.Instance.RemoveListener(OnTeamSelected);
         TeamLostEvent.Instance.RemoveListener(OnTeamLost);
+        ResetGameEvent.Instance.RemoveListener(OnResetGame);
     }
 }

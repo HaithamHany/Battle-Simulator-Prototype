@@ -6,7 +6,7 @@ namespace Events
     /// <summary>
     /// Notifies UI with the winner team
     /// </summary>
-    public class GameOverEvent : UnityEvent<TeamManager>
+    public class GameOverEvent : UnityEvent<TeamDataConfig>
     {
         public static GameOverEvent Instance = new GameOverEvent();
     }
