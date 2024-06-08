@@ -1,0 +1,1 @@
+The AI Battle Simulator is a dynamic and interactive simulation project that pits AI-controlled units against each other in strategic combat scenarios. This project leverages the principles of Finite State Machines (FSM) to implement intelligent behavior patterns in the AI units, enabling them to make decisions, adapt to different situations, and engage in various combat tactics.
